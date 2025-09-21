@@ -66,7 +66,7 @@ A comprehensive Next.js application for tracking, analyzing, and predicting flow
    ```
 
 4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to https://bloomwatch-nu.vercel.app/
 
 ## 🏗️ Project Structure
 
