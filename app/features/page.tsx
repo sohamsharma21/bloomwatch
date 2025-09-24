@@ -1,36 +1,9 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Eye, Play, Image, Users, TrendingUp } from "lucide-react"
-
-// Dynamic imports for Three.js components to avoid SSR issues
-const Bloom3DVisualizer = dynamic(() => import("@/components/3d-bloom-visualizer").then(mod => ({ default: mod.Bloom3DVisualizer })), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading 3D Visualizer...</div>
-})
-
-const AnimatedBloomCycle = dynamic(() => import("@/components/animated-bloom-cycle").then(mod => ({ default: mod.AnimatedBloomCycle })), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Animation...</div>
-})
-
-const MultimediaGallery = dynamic(() => import("@/components/multimedia-gallery").then(mod => ({ default: mod.MultimediaGallery })), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Gallery...</div>
-})
-
-const CommunityPlatform = dynamic(() => import("@/components/community-platform").then(mod => ({ default: mod.CommunityPlatform })), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Community...</div>
-})
-
-const EconomicAnalysis = dynamic(() => import("@/components/economic-analysis").then(mod => ({ default: mod.EconomicAnalysis })), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Analysis...</div>
-})
 
 export default function FeaturesPage() {
   return (
@@ -82,7 +55,13 @@ export default function FeaturesPage() {
                 Immersive 3D plant models with VR support for enhanced bloom exploration
               </p>
             </div>
-            <Bloom3DVisualizer />
+            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
+                <p className="text-lg font-medium">3D Bloom Visualizer</p>
+                <p className="text-sm text-muted-foreground">Interactive 3D plant models</p>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Animations Tab */}
@@ -93,7 +72,13 @@ export default function FeaturesPage() {
                 Interactive animations showing complete plant life cycles with educational content
               </p>
             </div>
-            <AnimatedBloomCycle />
+            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-pink-400 rounded-full mb-4 animate-bounce"></div>
+                <p className="text-lg font-medium">Plant Growth Animation</p>
+                <p className="text-sm text-muted-foreground">Realistic life cycle animations</p>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Multimedia Tab */}
@@ -104,7 +89,13 @@ export default function FeaturesPage() {
                 Comprehensive collection of photos, videos, and time-lapse recordings from global bloom events
               </p>
             </div>
-            <MultimediaGallery />
+            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
+                <p className="text-lg font-medium">Media Gallery</p>
+                <p className="text-sm text-muted-foreground">Photos, videos & time-lapses</p>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Community Tab */}
@@ -115,7 +106,13 @@ export default function FeaturesPage() {
                 Connect with researchers, share findings, and collaborate on global phenology research
               </p>
             </div>
-            <CommunityPlatform />
+            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-red-400 rounded-full mb-4 animate-pulse"></div>
+                <p className="text-lg font-medium">Community Hub</p>
+                <p className="text-sm text-muted-foreground">Research collaboration platform</p>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Economics Tab */}
@@ -126,7 +123,13 @@ export default function FeaturesPage() {
                 Market trends, crop yield predictions, and economic impact assessment of bloom patterns
               </p>
             </div>
-            <EconomicAnalysis />
+            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full mb-4 animate-pulse"></div>
+                <p className="text-lg font-medium">Economic Dashboard</p>
+                <p className="text-sm text-muted-foreground">Market analysis & predictions</p>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
 
