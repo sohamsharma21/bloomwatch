@@ -7,6 +7,7 @@ import { Eye, Play, Image, Users, TrendingUp } from "lucide-react"
 import { Simple3DViewer } from "@/components/simple-3d-viewer"
 import { AnimatedBloomCycle } from "@/components/animated-bloom-cycle"
 import { MultimediaGallery } from "@/components/multimedia-gallery"
+import { PerformanceMonitor } from "@/components/performance-monitor"
 
 export default function FeaturesPage() {
   return (
@@ -162,6 +163,11 @@ export default function FeaturesPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Performance Monitor */}
+        <div className="mt-8">
+          <PerformanceMonitor />
         </div>
       </div>
 

@@ -32,12 +32,12 @@ function Media3DPreview({ type, source, title }: { type: string; source: string;
         ctx.fillRect(centerX - 35, centerY - 25, 70, 50)
         
         // Try to load actual image
-        const img = new Image()
+        const img = document.createElement('img')
         img.crossOrigin = "anonymous"
-        img.onload = () => {
+        img.onload = function() {
           ctx.drawImage(img, centerX - 35, centerY - 25, 70, 50)
         }
-        img.onerror = () => {
+        img.onerror = function() {
           // Fallback to colored rectangle
           ctx.fillStyle = '#FF69B4'
           ctx.fillRect(centerX - 30, centerY - 20, 60, 40)

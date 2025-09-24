@@ -1,12 +1,16 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "bloomwatch-app",
+  "version": "1.0.0",
+  "description": "A comprehensive Next.js application for tracking, analyzing, and predicting flower blooming patterns with interactive visualizations and AI-powered insights.",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
