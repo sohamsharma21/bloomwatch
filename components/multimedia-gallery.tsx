@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Image, Video, Camera, Upload, Play, Download, Share2, Heart, Eye, Move3d } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-function Media3DPreview({ type, source }: { type: string; source: string }) {
+function Media3DPreview({ type, source, title }: { type: string; source: string; title: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number>()
 
@@ -25,23 +25,28 @@ function Media3DPreview({ type, source }: { type: string; source: string }) {
       const time = Date.now() * 0.001
       
       if (type === "photo") {
-        // 3D photo frame
+        // Draw photo frame with actual image
         ctx.fillStyle = '#8B4513'
         ctx.fillRect(centerX - 40, centerY - 30, 80, 60)
         ctx.fillStyle = '#87CEEB'
         ctx.fillRect(centerX - 35, centerY - 25, 70, 50)
         
-        // Photo content
-        ctx.fillStyle = '#FF69B4'
-        ctx.beginPath()
-        ctx.arc(centerX, centerY, 15, 0, Math.PI * 2)
-        ctx.fill()
+        // Try to load actual image
+        const img = new Image()
+        img.crossOrigin = "anonymous"
+        img.onload = () => {
+          ctx.drawImage(img, centerX - 35, centerY - 25, 70, 50)
+        }
+        img.onerror = () => {
+          // Fallback to colored rectangle
+          ctx.fillStyle = '#FF69B4'
+          ctx.fillRect(centerX - 30, centerY - 20, 60, 40)
+        }
+        img.src = source
       } else if (type === "video") {
-        // 3D video sphere
+        // Video preview with play button
         ctx.fillStyle = '#32CD32'
-        ctx.beginPath()
-        ctx.arc(centerX, centerY, 25 + Math.sin(time * 2) * 3, 0, Math.PI * 2)
-        ctx.fill()
+        ctx.fillRect(centerX - 30, centerY - 20, 60, 40)
         
         // Play button
         ctx.fillStyle = '#FFFFFF'
@@ -51,18 +56,30 @@ function Media3DPreview({ type, source }: { type: string; source: string }) {
         ctx.lineTo(centerX + 8, centerY)
         ctx.closePath()
         ctx.fill()
-      } else if (type === "timelapse") {
-        // 3D timelapse cylinder
-        ctx.fillStyle = '#FF6347'
-        ctx.fillRect(centerX - 20, centerY - 15, 40, 30)
         
-        // Time progression
+        // Video title
+        ctx.fillStyle = '#000000'
+        ctx.font = '10px Arial'
+        ctx.textAlign = 'center'
+        ctx.fillText(title.substring(0, 15), centerX, centerY + 25)
+      } else if (type === "timelapse") {
+        // Time-lapse preview
+        ctx.fillStyle = '#FF6347'
+        ctx.fillRect(centerX - 25, centerY - 15, 50, 30)
+        
+        // Time progression bars
         for (let i = 0; i < 5; i++) {
-          const x = centerX - 15 + i * 7.5
+          const x = centerX - 20 + i * 10
           const height = 10 + Math.sin(time + i) * 5
           ctx.fillStyle = `hsl(${120 + i * 20}, 70%, 50%)`
-          ctx.fillRect(x, centerY - height/2, 5, height)
+          ctx.fillRect(x, centerY - height/2, 8, height)
         }
+        
+        // Time-lapse label
+        ctx.fillStyle = '#FFFFFF'
+        ctx.font = '8px Arial'
+        ctx.textAlign = 'center'
+        ctx.fillText('TIMELAPSE', centerX, centerY + 20)
       }
       
       animationRef.current = requestAnimationFrame(animate)
@@ -75,7 +92,7 @@ function Media3DPreview({ type, source }: { type: string; source: string }) {
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [type])
+  }, [type, source, title])
 
   return (
     <canvas
@@ -93,12 +110,86 @@ export function MultimediaGallery() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const mediaItems = [
-    { type: "photo", title: "Spring Cherry Blossoms", source: "/pink-cherry-blossom-tree-in-spring.jpg" },
-    { type: "photo", title: "Summer Sunflowers", source: "/bright-yellow-sunflower-field.jpg" },
-    { type: "photo", title: "Autumn Lotus", source: "/beautiful-pink-lotus-flower-in-pond.jpg" },
-    { type: "video", title: "Bloom Time-lapse", source: "/timelapse-bloom.mp4" },
-    { type: "timelapse", title: "Flower Growth", source: "/flower-growth.mp4" },
-    { type: "photo", title: "Lavender Fields", source: "/purple-lavender-field-in-provence.jpg" },
+    { 
+      type: "photo", 
+      title: "Spring Cherry Blossoms", 
+      source: "/pink-cherry-blossom-tree-in-spring.jpg",
+      description: "Beautiful cherry blossoms in full bloom during spring season",
+      date: "March 2024",
+      location: "Tokyo, Japan"
+    },
+    { 
+      type: "photo", 
+      title: "Summer Sunflowers", 
+      source: "/bright-yellow-sunflower-field.jpg",
+      description: "Vast field of golden sunflowers under bright summer sky",
+      date: "July 2024",
+      location: "Tuscany, Italy"
+    },
+    { 
+      type: "photo", 
+      title: "Autumn Lotus", 
+      source: "/beautiful-pink-lotus-flower-in-pond.jpg",
+      description: "Serene pink lotus flowers floating in peaceful pond",
+      date: "September 2024",
+      location: "Kyoto, Japan"
+    },
+    { 
+      type: "photo", 
+      title: "Lavender Fields", 
+      source: "/purple-lavender-field-in-provence.jpg",
+      description: "Endless purple lavender fields in Provence countryside",
+      date: "June 2024",
+      location: "Provence, France"
+    },
+    { 
+      type: "video", 
+      title: "Cherry Blossom Time-lapse", 
+      source: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+      description: "Time-lapse of cherry blossoms blooming over 3 days",
+      date: "March 2024",
+      location: "Washington DC, USA"
+    },
+    { 
+      type: "video", 
+      title: "Sunflower Field Sunrise", 
+      source: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4",
+      description: "Sunrise time-lapse over sunflower field",
+      date: "July 2024",
+      location: "Kansas, USA"
+    },
+    { 
+      type: "timelapse", 
+      title: "Flower Growth Cycle", 
+      source: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_5mb.mp4",
+      description: "Complete growth cycle from seed to bloom",
+      date: "April 2024",
+      location: "Research Lab, Netherlands"
+    },
+    { 
+      type: "timelapse", 
+      title: "Tulip Field Blooming", 
+      source: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_10mb.mp4",
+      description: "Tulip fields blooming in spring",
+      date: "April 2024",
+      location: "Keukenhof, Netherlands"
+    },
+    { 
+      type: "photo", 
+      title: "Rose Garden", 
+      source: "/placeholder.jpg",
+      description: "Colorful rose garden in full bloom",
+      date: "May 2024",
+      location: "Portland, USA"
+    },
+    { 
+      type: "video", 
+      title: "Butterfly Garden", 
+      source: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_30mb.mp4",
+      description: "Butterflies visiting various flowers",
+      date: "June 2024",
+      location: "Costa Rica"
+    }
   ]
 
   const filteredMedia = mediaItems.filter(item => {
@@ -155,7 +246,7 @@ export function MultimediaGallery() {
           <div key={index} className="relative group cursor-pointer" onClick={() => handleMediaClick(index)}>
             <div className="aspect-square bg-gradient-to-br from-green-100 to-blue-100 rounded-lg overflow-hidden">
               <div className="w-full h-full flex items-center justify-center">
-                <Media3DPreview type={item.type} source={item.source} />
+                <Media3DPreview type={item.type} source={item.source} title={item.title} />
               </div>
             </div>
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -164,7 +255,11 @@ export function MultimediaGallery() {
                 View 3D
               </Button>
             </div>
-            <p className="text-sm font-medium mt-2 text-center">{item.title}</p>
+            <div className="mt-2">
+              <p className="text-sm font-medium text-center">{item.title}</p>
+              <p className="text-xs text-muted-foreground text-center">{item.location}</p>
+              <p className="text-xs text-muted-foreground text-center">{item.date}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -173,11 +268,48 @@ export function MultimediaGallery() {
         <DialogContent className="sm:max-w-[800px] h-[600px] flex flex-col">
           <DialogHeader>
             <DialogTitle>{selectedMedia !== null ? mediaItems[selectedMedia].title : "Media Preview"}</DialogTitle>
+            {selectedMedia !== null && (
+              <div className="text-sm text-muted-foreground">
+                <p>{mediaItems[selectedMedia].description}</p>
+                <p className="mt-1">📍 {mediaItems[selectedMedia].location} • 📅 {mediaItems[selectedMedia].date}</p>
+              </div>
+            )}
           </DialogHeader>
           <div className="flex-1 relative">
             {selectedMedia !== null && (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100 rounded-lg">
-                <Media3DPreview type={mediaItems[selectedMedia].type} source={mediaItems[selectedMedia].source} />
+                {mediaItems[selectedMedia].type === "photo" ? (
+                  <div className="relative w-full h-full">
+                    <img 
+                      src={mediaItems[selectedMedia].source} 
+                      alt={mediaItems[selectedMedia].title}
+                      className="w-full h-full object-cover rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                        if (fallback) fallback.style.display = 'flex'
+                      }}
+                    />
+                    <div className="hidden w-full h-full items-center justify-center bg-gradient-to-br from-pink-200 to-purple-200 rounded-lg">
+                      <div className="text-center">
+                        <div className="w-32 h-32 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
+                        <p className="text-lg font-medium">Photo Preview</p>
+                        <p className="text-sm text-muted-foreground">{mediaItems[selectedMedia].title}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-200 to-blue-200 rounded-lg">
+                    <div className="text-center">
+                      <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-400 rounded-full mb-4 animate-pulse flex items-center justify-center">
+                        <Play className="w-16 h-16 text-white" />
+                      </div>
+                      <p className="text-lg font-medium">{mediaItems[selectedMedia].type === "video" ? "Video Preview" : "Time-lapse Preview"}</p>
+                      <p className="text-sm text-muted-foreground">{mediaItems[selectedMedia].title}</p>
+                      <p className="text-xs text-muted-foreground mt-2">Click play to view</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
