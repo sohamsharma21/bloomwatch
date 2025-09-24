@@ -1,14 +1,36 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Eye, Play, Image, Users, TrendingUp } from "lucide-react"
-import { Bloom3DVisualizer } from "@/components/3d-bloom-visualizer"
-import { AnimatedBloomCycle } from "@/components/animated-bloom-cycle"
-import { MultimediaGallery } from "@/components/multimedia-gallery"
-import { CommunityPlatform } from "@/components/community-platform"
-import { EconomicAnalysis } from "@/components/economic-analysis"
+
+// Dynamic imports for Three.js components to avoid SSR issues
+const Bloom3DVisualizer = dynamic(() => import("@/components/3d-bloom-visualizer").then(mod => ({ default: mod.Bloom3DVisualizer })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading 3D Visualizer...</div>
+})
+
+const AnimatedBloomCycle = dynamic(() => import("@/components/animated-bloom-cycle").then(mod => ({ default: mod.AnimatedBloomCycle })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Animation...</div>
+})
+
+const MultimediaGallery = dynamic(() => import("@/components/multimedia-gallery").then(mod => ({ default: mod.MultimediaGallery })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Gallery...</div>
+})
+
+const CommunityPlatform = dynamic(() => import("@/components/community-platform").then(mod => ({ default: mod.CommunityPlatform })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Community...</div>
+})
+
+const EconomicAnalysis = dynamic(() => import("@/components/economic-analysis").then(mod => ({ default: mod.EconomicAnalysis })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">Loading Analysis...</div>
+})
 
 export default function FeaturesPage() {
   return (

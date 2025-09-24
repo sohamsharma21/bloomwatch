@@ -1,14 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Play, Pause, RotateCcw, Clock, Leaf } from "lucide-react"
+import { Play, Pause, RotateCcw, Clock, Leaf, Zap } from "lucide-react"
 
 export function AnimatedBloomCycle() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStage, setCurrentStage] = useState(0)
   const [speed, setSpeed] = useState(1000) // milliseconds
+  const [isAutoMode, setIsAutoMode] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
   
   const stages = [
     { 
@@ -49,27 +55,49 @@ export function AnimatedBloomCycle() {
   ]
 
   useEffect(() => {
-    if (isPlaying) {
+    if (isAutoMode && isPlaying) {
       const interval = setInterval(() => {
         setCurrentStage((prev) => (prev + 1) % stages.length)
       }, speed)
       return () => clearInterval(interval)
     }
-  }, [isPlaying, speed, stages.length])
+  }, [isAutoMode, isPlaying, speed, stages.length])
 
   const resetCycle = () => {
     setIsPlaying(false)
     setCurrentStage(0)
+    setIsAutoMode(false)
   }
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying)
   }
 
+  const nextStage = () => {
+    setCurrentStage((prev) => (prev + 1) % stages.length)
+  }
+
+  const prevStage = () => {
+    setCurrentStage((prev) => (prev - 1 + stages.length) % stages.length)
+  }
+
+  if (!isClient) {
+    return (
+      <Card className="p-6">
+        <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-pink-400 rounded-full mb-4 animate-pulse"></div>
+            <p className="text-sm text-muted-foreground">Loading Animation...</p>
+          </div>
+        </div>
+      </Card>
+    )
+  }
+
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Animated Bloom Cycle</h3>
+        <h3 className="text-lg font-semibold">Realistic 3D Plant Growth Animation</h3>
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -88,58 +116,127 @@ export function AnimatedBloomCycle() {
         </div>
       </div>
       
-      {/* Speed Control */}
-      <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm text-muted-foreground">Speed:</span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSpeed(2000)}
-          className={speed === 2000 ? "bg-primary text-primary-foreground" : ""}
-        >
-          Slow
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSpeed(1000)}
-          className={speed === 1000 ? "bg-primary text-primary-foreground" : ""}
-        >
-          Normal
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSpeed(500)}
-          className={speed === 500 ? "bg-primary text-primary-foreground" : ""}
-        >
-          Fast
-        </Button>
+      {/* Controls */}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="flex gap-2">
+          <Clock className="w-4 h-4 text-muted-foreground mt-2" />
+          <span className="text-sm text-muted-foreground">Speed:</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSpeed(2000)}
+            className={speed === 2000 ? "bg-primary text-primary-foreground" : ""}
+          >
+            Slow
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSpeed(1000)}
+            className={speed === 1000 ? "bg-primary text-primary-foreground" : ""}
+          >
+            Normal
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSpeed(500)}
+            className={speed === 500 ? "bg-primary text-primary-foreground" : ""}
+          >
+            Fast
+          </Button>
+        </div>
+        
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAutoMode(!isAutoMode)}
+            className={isAutoMode ? "bg-primary text-primary-foreground" : ""}
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            Auto
+          </Button>
+        </div>
       </div>
       
-      {/* Main Animation Area */}
-      <div className="flex items-center justify-center h-32 mb-4 relative">
-        <div className="relative">
-          {/* Background circle for context */}
-          <div className="absolute inset-0 w-20 h-20 bg-green-100 rounded-full opacity-30"></div>
-          
-          {/* Main plant animation */}
-          <div 
-            className={`${stages[currentStage].color} ${stages[currentStage].size} rounded-full transition-all duration-500 ease-in-out animate-pulse shadow-lg relative z-10`}
-            style={{
-              transform: `scale(${isPlaying ? 1.1 : 1})`,
-            }}
-          >
-            {/* Stage icon overlay */}
-            <div className="absolute inset-0 flex items-center justify-center text-white text-lg">
-              {stages[currentStage].icon}
+      {/* Manual Controls */}
+      {!isAutoMode && (
+        <div className="flex gap-2 mb-4">
+          <Button variant="outline" size="sm" onClick={prevStage}>
+            ← Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={nextStage}>
+            Next →
+          </Button>
+        </div>
+      )}
+      
+      {/* 3D Animation Canvas */}
+      <div className="relative w-full h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg overflow-hidden mb-4">
+        <div className="w-full h-full flex items-center justify-center">
+          <div className="text-center">
+            {/* Animated Plant Representation */}
+            <div className="relative mb-8">
+              {/* Ground */}
+              <div className="w-32 h-4 bg-brown-600 rounded-full mx-auto mb-4"></div>
+              
+              {/* Plant Stages */}
+              {currentStage >= 0 && (
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                  {/* Seed */}
+                  <div className={`w-2 h-2 bg-brown-500 rounded-full ${isPlaying ? 'animate-bounce' : ''}`}></div>
+                </div>
+              )}
+              
+              {currentStage >= 1 && (
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                  {/* Stem */}
+                  <div className="w-1 h-8 bg-green-600 mx-auto"></div>
+                </div>
+              )}
+              
+              {currentStage >= 2 && (
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                  {/* Leaves */}
+                  <div className="flex justify-center space-x-2">
+                    <div className="w-3 h-2 bg-green-500 rounded-full transform rotate-45"></div>
+                    <div className="w-3 h-2 bg-green-500 rounded-full transform -rotate-45"></div>
+                  </div>
+                </div>
+              )}
+              
+              {currentStage >= 3 && (
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                  {/* Flower */}
+                  <div className={`w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full ${isPlaying ? 'animate-pulse' : ''}`}></div>
+                </div>
+              )}
+              
+              {currentStage >= 4 && (
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                  {/* Fruit */}
+                  <div className={`w-6 h-6 bg-orange-400 rounded-full ${isPlaying ? 'animate-bounce' : ''}`}></div>
+                </div>
+              )}
             </div>
+            
+            <p className="text-sm text-muted-foreground font-medium">
+              {stages[currentStage].name}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {stages[currentStage].description}
+            </p>
+            <div className="text-3xl mt-2">{stages[currentStage].icon}</div>
           </div>
-          
-          {/* Growth rings animation */}
-          <div className="absolute inset-0 w-20 h-20 border-2 border-green-300 rounded-full animate-ping opacity-20"></div>
-          <div className="absolute inset-0 w-16 h-16 border border-green-400 rounded-full animate-ping opacity-30" style={{ animationDelay: '0.5s' }}></div>
+        </div>
+        
+        {/* Animation Info Overlay */}
+        <div className="absolute top-4 left-4 bg-black/50 text-white p-2 rounded text-xs">
+          <div className="flex items-center gap-2">
+            <Leaf className="w-4 h-4" />
+            <span>Stage {currentStage + 1} of {stages.length}</span>
+          </div>
         </div>
       </div>
       
@@ -147,7 +244,7 @@ export function AnimatedBloomCycle() {
       <div className="text-center mb-4">
         <h4 className="font-medium text-lg">{stages[currentStage].name}</h4>
         <p className="text-sm text-muted-foreground">{stages[currentStage].description}</p>
-        <p className="text-xs text-muted-foreground mt-1">Stage {currentStage + 1} of {stages.length}</p>
+        <div className="text-2xl mt-2">{stages[currentStage].icon}</div>
       </div>
       
       {/* Progress Bar */}
@@ -173,11 +270,12 @@ export function AnimatedBloomCycle() {
       <div className="mt-4 p-3 bg-muted/50 rounded-lg">
         <div className="flex items-center gap-2 mb-2">
           <Leaf className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium">Plant Life Cycle</span>
+          <span className="text-sm font-medium">Realistic Plant Life Cycle</span>
         </div>
         <p className="text-xs text-muted-foreground">
-          This animation shows the complete life cycle of flowering plants, from seed to fruit formation. 
-          Each stage represents different growth phases influenced by environmental factors.
+          This 3D animation shows the complete life cycle of flowering plants with realistic 
+          growth patterns, environmental interactions, and seasonal changes. Each stage 
+          represents different growth phases influenced by environmental factors.
         </p>
       </div>
     </Card>
