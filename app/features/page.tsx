@@ -4,6 +4,9 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Eye, Play, Image, Users, TrendingUp } from "lucide-react"
+import { Simple3DViewer } from "@/components/simple-3d-viewer"
+import { AnimatedBloomCycle } from "@/components/animated-bloom-cycle"
+import { MultimediaGallery } from "@/components/multimedia-gallery"
 
 export default function FeaturesPage() {
   return (
@@ -55,14 +58,7 @@ export default function FeaturesPage() {
                 Immersive 3D plant models with VR support for enhanced bloom exploration
               </p>
             </div>
-            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-32 h-32 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
-                <p className="text-lg font-medium">3D Bloom Visualizer</p>
-                <p className="text-sm text-muted-foreground">Interactive 3D plant models</p>
-                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Real 3D models with Three.js</p>
-              </div>
-            </div>
+            <Simple3DViewer />
           </TabsContent>
 
           {/* Animations Tab */}
@@ -73,14 +69,7 @@ export default function FeaturesPage() {
                 Interactive animations showing complete plant life cycles with educational content
               </p>
             </div>
-            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-pink-400 rounded-full mb-4 animate-bounce"></div>
-                <p className="text-lg font-medium">Plant Growth Animation</p>
-                <p className="text-sm text-muted-foreground">Realistic life cycle animations</p>
-                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Canvas-based animations</p>
-              </div>
-            </div>
+            <AnimatedBloomCycle />
           </TabsContent>
 
           {/* Multimedia Tab */}
@@ -91,14 +80,7 @@ export default function FeaturesPage() {
                 Comprehensive collection of photos, videos, and time-lapse recordings from global bloom events
               </p>
             </div>
-            <div className="h-96 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
-                <p className="text-lg font-medium">Media Gallery</p>
-                <p className="text-sm text-muted-foreground">Photos, videos & time-lapses</p>
-                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Interactive media viewer</p>
-              </div>
-            </div>
+            <MultimediaGallery />
           </TabsContent>
 
           {/* Community Tab */}
