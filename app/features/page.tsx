@@ -60,6 +60,7 @@ export default function FeaturesPage() {
                 <div className="w-32 h-32 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
                 <p className="text-lg font-medium">3D Bloom Visualizer</p>
                 <p className="text-sm text-muted-foreground">Interactive 3D plant models</p>
+                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Real 3D models with Three.js</p>
               </div>
             </div>
           </TabsContent>
@@ -77,6 +78,7 @@ export default function FeaturesPage() {
                 <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-pink-400 rounded-full mb-4 animate-bounce"></div>
                 <p className="text-lg font-medium">Plant Growth Animation</p>
                 <p className="text-sm text-muted-foreground">Realistic life cycle animations</p>
+                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Canvas-based animations</p>
               </div>
             </div>
           </TabsContent>
@@ -94,6 +96,7 @@ export default function FeaturesPage() {
                 <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mb-4 animate-pulse"></div>
                 <p className="text-lg font-medium">Media Gallery</p>
                 <p className="text-sm text-muted-foreground">Photos, videos & time-lapses</p>
+                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Interactive media viewer</p>
               </div>
             </div>
           </TabsContent>
@@ -111,6 +114,7 @@ export default function FeaturesPage() {
                 <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-red-400 rounded-full mb-4 animate-pulse"></div>
                 <p className="text-lg font-medium">Community Hub</p>
                 <p className="text-sm text-muted-foreground">Research collaboration platform</p>
+                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Discussion forums & blogs</p>
               </div>
             </div>
           </TabsContent>
@@ -128,6 +132,7 @@ export default function FeaturesPage() {
                 <div className="w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full mb-4 animate-pulse"></div>
                 <p className="text-lg font-medium">Economic Dashboard</p>
                 <p className="text-sm text-muted-foreground">Market analysis & predictions</p>
+                <p className="text-xs text-muted-foreground mt-2">Coming Soon: Real-time economic data</p>
               </div>
             </div>
           </TabsContent>
