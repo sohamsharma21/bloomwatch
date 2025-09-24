@@ -8,7 +8,6 @@ import { Separator } from "@/components/ui/separator"
 import { Footer } from "@/components/footer"
 import { LearningCenter } from "@/components/learning-center"
 import { Rocket, Target, Users, Globe, Satellite, Award, ExternalLink, Calendar, MapPin, Lightbulb } from "lucide-react"
-import { CommunityPlatform } from "@/components/community-platform"
 
 export default function ChallengePage() {
   const challengeStats = [
@@ -290,19 +289,6 @@ export default function ChallengePage() {
         </Card>
       </div>
 
-      {/* Community Platform Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Join the Global Community</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Connect with researchers, citizen scientists, and bloom enthusiasts from around the world. 
-              Share your findings, collaborate on research, and contribute to global phenology knowledge.
-            </p>
-          </div>
-          <CommunityPlatform />
-        </div>
-      </section>
 
       <Footer />
     </div>

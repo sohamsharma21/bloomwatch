@@ -12,7 +12,6 @@ import { Progress } from "@/components/ui/progress"
 import { Search, Calendar, MapPin, Info, Filter, BarChart3 } from "lucide-react"
 import { species } from "@/lib/data"
 import { SpeciesChart } from "@/components/charts/species-chart"
-import { MultimediaGallery } from "@/components/multimedia-gallery"
 import Image from "next/image"
 import { Footer } from "@/components/footer"
 
@@ -299,18 +298,6 @@ export default function ExplorerPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Multimedia Gallery Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Multimedia Gallery</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Explore beautiful photos, videos, and time-lapse recordings of blooming events from around the world.
-            </p>
-          </div>
-          <MultimediaGallery />
-        </div>
-      </section>
 
       <Footer />
     </div>
