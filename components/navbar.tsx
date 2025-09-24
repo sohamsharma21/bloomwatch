@@ -31,7 +31,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center space-x-3" aria-label="BloomWatch Home">
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image
-                src="/images/bloomwatch-logo.png"
+                src="/bloomwatch-logo.png"
                 alt="BloomWatch Logo"
                 width={40}
                 height={40}
