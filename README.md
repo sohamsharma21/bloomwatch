@@ -66,7 +66,7 @@ A comprehensive Next.js application for tracking, analyzing, and predicting flow
    ```
 
 4. **Open your browser**
-   Navigate to https://bloomwatch-nu.vercel.app/
+   Navigate to https://bloomwatch-1asu9ev4t-iblis-projects.vercel.app/
 
 ## 🏗️ Project Structure
 
@@ -163,7 +163,14 @@ The application is fully responsive and optimized for:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Vercel (Live!)
+✅ **Successfully Deployed!**
+- **Live URL:** https://bloomwatch-1asu9ev4t-iblis-projects.vercel.app/
+- **Dashboard:** https://bloomwatch-1asu9ev4t-iblis-projects.vercel.app/dashboard
+- **Features:** https://bloomwatch-1asu9ev4t-iblis-projects.vercel.app/features
+- **GitHub:** https://github.com/sohamsharma21/bloomwatch
+
+### Manual Deployment
 1. Push your code to GitHub
 2. Connect your repository to Vercel
 3. Deploy automatically
