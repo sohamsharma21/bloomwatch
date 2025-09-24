@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import { Flower } from "lucide-react"
 
 export function Preloader() {
   const [isLoading, setIsLoading] = useState(true)
@@ -10,7 +11,7 @@ export function Preloader() {
   useEffect(() => {
     // Simulate loading progress
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
+      setProgress((prev: number) => {
         if (prev >= 100) {
           clearInterval(progressInterval)
           return 100
@@ -38,7 +39,7 @@ export function Preloader() {
         <div className="relative">
           {/* Main Logo with Float Animation */}
           <div className="float-animation glow-animation rounded-full p-2 border-4 border-primary/30 bg-background/50 backdrop-blur-sm">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden flex items-center justify-center">
               <Image
                 src="/bloomwatch-logo.png"
                 alt="BloomWatch Logo"
@@ -46,7 +47,15 @@ export function Preloader() {
                 className="object-cover drop-shadow-2xl"
                 sizes="128px"
                 priority
+                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                  e.currentTarget.style.display = 'none';
+                  const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (nextElement) {
+                    nextElement.style.display = 'flex';
+                  }
+                }}
               />
+              <Flower className="w-20 h-20 text-primary hidden" />
             </div>
           </div>
 

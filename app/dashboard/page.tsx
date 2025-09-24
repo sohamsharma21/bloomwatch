@@ -11,6 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MapPin, TrendingUp, Globe, Flower2, Download, FileText, Brain, Target, Zap, AlertCircle } from "lucide-react"
 import { SafeComponent } from "@/components/safe-component"
 import { LoadingSpinner } from "@/components/loading-spinner"
+import { Bloom3DVisualizer } from "@/components/3d-bloom-visualizer"
+import { AnimatedBloomCycle } from "@/components/animated-bloom-cycle"
+import { MultimediaGallery } from "@/components/multimedia-gallery"
+import { CommunityPlatform } from "@/components/community-platform"
+import { EconomicAnalysis } from "@/components/economic-analysis"
 
 const mockRegions = [
   {
@@ -233,7 +238,7 @@ export default function DashboardPage() {
           {/* Main Content */}
           <div className="flex-1 space-y-8">
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-8">
+              <TabsList className="grid w-full grid-cols-5 mb-8">
                 <TabsTrigger value="overview" className="flex items-center gap-2">
                   <Globe className="h-4 w-4" />
                   Global Overview
@@ -241,6 +246,18 @@ export default function DashboardPage() {
                 <TabsTrigger value="insights" className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
                   Data Insights
+                </TabsTrigger>
+                <TabsTrigger value="3d-visualization" className="flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  3D & VR
+                </TabsTrigger>
+                <TabsTrigger value="multimedia" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Multimedia
+                </TabsTrigger>
+                <TabsTrigger value="community" className="flex items-center gap-2">
+                  <Brain className="h-4 w-4" />
+                  Community
                 </TabsTrigger>
                 <TabsTrigger value="predictions" className="flex items-center gap-2">
                   <Brain className="h-4 w-4" />
@@ -375,6 +392,25 @@ export default function DashboardPage() {
                     </CardContent>
                   </Card>
                 </div>
+              </TabsContent>
+
+              {/* 3D Visualization Tab */}
+              <TabsContent value="3d-visualization" className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Bloom3DVisualizer />
+                  <AnimatedBloomCycle />
+                </div>
+                <EconomicAnalysis />
+              </TabsContent>
+
+              {/* Multimedia Tab */}
+              <TabsContent value="multimedia" className="space-y-6">
+                <MultimediaGallery />
+              </TabsContent>
+
+              {/* Community Tab */}
+              <TabsContent value="community" className="space-y-6">
+                <CommunityPlatform />
               </TabsContent>
             </Tabs>
           </div>

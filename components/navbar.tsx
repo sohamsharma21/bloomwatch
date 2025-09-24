@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import { Moon, Sun, Menu, X } from "lucide-react"
+import { Moon, Sun, Menu, X, Flower } from "lucide-react"
 import Image from "next/image"
 
 export function Navbar() {
@@ -29,7 +29,7 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3" aria-label="BloomWatch Home">
-            <div className="relative w-10 h-10 flex-shrink-0">
+            <div className="relative w-10 h-10 flex-shrink-0 flex items-center justify-center">
               <Image
                 src="/bloomwatch-logo.png"
                 alt="BloomWatch Logo"
@@ -37,7 +37,15 @@ export function Navbar() {
                 height={40}
                 className="rounded-full object-contain"
                 priority
+                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                  e.currentTarget.style.display = 'none';
+                  const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (nextElement) {
+                    nextElement.style.display = 'flex';
+                  }
+                }}
               />
+              <Flower className="w-8 h-8 text-primary hidden" />
             </div>
             <span className="text-xl font-bold text-foreground">BloomWatch</span>
           </Link>
@@ -50,7 +58,7 @@ export function Navbar() {
                 href={item.href}
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-sm px-2 py-1"
                 role="menuitem"
-                onKeyDown={(e) => {
+                onKeyDown={(e: React.KeyboardEvent<HTMLAnchorElement>) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault()
                     e.currentTarget.click()
@@ -108,7 +116,7 @@ export function Navbar() {
                   className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-sm"
                   onClick={() => setIsOpen(false)}
                   role="menuitem"
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: React.KeyboardEvent<HTMLAnchorElement>) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault()
                       setIsOpen(false)
