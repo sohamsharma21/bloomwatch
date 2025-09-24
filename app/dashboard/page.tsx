@@ -1,386 +1,455 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { MapPin, TrendingUp, Globe, Flower2, Download, FileText, Brain, Target, Zap, AlertCircle } from "lucide-react"
-import { SafeComponent } from "@/components/safe-component"
-import { LoadingSpinner } from "@/components/loading-spinner"
+import { Progress } from "@/components/ui/progress"
+import { 
+  MapPin, 
+  TrendingUp, 
+  Globe, 
+  Flower2, 
+  Download, 
+  Brain, 
+  Target, 
+  Zap, 
+  AlertCircle,
+  Thermometer,
+  Droplets,
+  Sun,
+  Wind,
+  Calendar,
+  BarChart3,
+  PieChart,
+  Activity,
+  Eye,
+  Clock
+} from "lucide-react"
 
-const mockRegions = [
-  {
-    id: "asia",
-    name: "Asia Pacific",
-    activeBlooms: 1247,
-    hotspots: [
-      { species: "Cherry Blossom", status: "Full Bloom" },
-      { species: "Lotus", status: "Budding" },
+// Real-time data simulation
+const generateRealTimeData = () => {
+  const now = new Date()
+  const currentHour = now.getHours()
+  const currentMonth = now.getMonth() + 1
+  
+  return {
+    timestamp: now.toLocaleString(),
+    temperature: 22 + Math.sin(currentHour * 0.5) * 5 + Math.random() * 2,
+    humidity: 65 + Math.sin(currentHour * 0.3) * 10 + Math.random() * 5,
+    windSpeed: 8 + Math.sin(currentHour * 0.4) * 3 + Math.random() * 2,
+    uvIndex: Math.max(0, 5 + Math.sin(currentHour * 0.2) * 3 + Math.random()),
+    activeBlooms: Math.floor(1200 + Math.sin(currentHour * 0.1) * 200 + Math.random() * 100),
+    bloomPredictions: Math.floor(800 + Math.sin(currentHour * 0.15) * 150 + Math.random() * 80),
+    speciesCount: Math.floor(45 + Math.sin(currentHour * 0.05) * 5 + Math.random() * 3),
+    regions: [
+      {
+        name: "Northern Hemisphere",
+        blooms: Math.floor(800 + Math.sin(currentHour * 0.1) * 100),
+        status: currentMonth >= 3 && currentMonth <= 6 ? "Peak Season" : "Off Season",
+        temperature: 18 + Math.sin(currentHour * 0.3) * 4,
+        humidity: 70 + Math.sin(currentHour * 0.2) * 8
+      },
+      {
+        name: "Southern Hemisphere", 
+        blooms: Math.floor(400 + Math.sin(currentHour * 0.12) * 80),
+        status: currentMonth >= 9 && currentMonth <= 12 ? "Peak Season" : "Off Season",
+        temperature: 25 + Math.sin(currentHour * 0.4) * 3,
+        humidity: 60 + Math.sin(currentHour * 0.25) * 6
+      },
+      {
+        name: "Equatorial Regions",
+        blooms: Math.floor(300 + Math.sin(currentHour * 0.08) * 50),
+        status: "Year Round",
+        temperature: 28 + Math.sin(currentHour * 0.2) * 2,
+        humidity: 80 + Math.sin(currentHour * 0.15) * 5
+      }
     ],
-  },
-  {
-    id: "europe",
-    name: "Europe",
-    activeBlooms: 892,
-    hotspots: [
-      { species: "Lavender", status: "Full Bloom" },
-      { species: "Sunflower", status: "Peak" },
+    topSpecies: [
+      { name: "Cherry Blossom", blooms: 450, trend: "up", peak: "March-April" },
+      { name: "Sunflower", blooms: 380, trend: "up", peak: "July-August" },
+      { name: "Lavender", blooms: 320, trend: "stable", peak: "June-July" },
+      { name: "Lotus", blooms: 280, trend: "up", peak: "May-September" },
+      { name: "Rose", blooms: 250, trend: "stable", peak: "April-October" }
     ],
-  },
-]
+    alerts: [
+      { type: "warning", message: "High temperature alert in Mediterranean region", time: "2 min ago" },
+      { type: "info", message: "Peak bloom season starting in Northern Europe", time: "15 min ago" },
+      { type: "success", message: "New species detected in Amazon region", time: "1 hour ago" }
+    ]
+  }
+}
 
 export default function DashboardPage() {
-  const [selectedRegion, setSelectedRegion] = useState<string>("all")
-  const [selectedSpecies, setSelectedSpecies] = useState<string>("all")
-  const [timeRange, setTimeRange] = useState([6]) // Default to June
+  const [data, setData] = useState(generateRealTimeData())
+  const [selectedRegion, setSelectedRegion] = useState("all")
+  const [selectedTimeframe, setSelectedTimeframe] = useState("realtime")
   const [isLoading, setIsLoading] = useState(false)
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ]
+  // Update data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setData(generateRealTimeData())
+    }, 30000)
 
-  const totalActiveBlooms = mockRegions.reduce((sum, region) => sum + region.activeBlooms, 0)
-  const predictedBlooms = Math.round(totalActiveBlooms * 1.15)
-  const diversityIndex = 0.87
+    return () => clearInterval(interval)
+  }, [])
 
-  const handleExportPDF = () => {
+  const refreshData = () => {
     setIsLoading(true)
     setTimeout(() => {
+      setData(generateRealTimeData())
       setIsLoading(false)
-      alert("PDF report would be generated here!")
     }, 1000)
   }
 
-  const handleExportCSV = () => {
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      alert("CSV data would be exported here!")
-    }, 1000)
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Peak Season": return "bg-green-500"
+      case "Off Season": return "bg-gray-500"
+      case "Year Round": return "bg-blue-500"
+      default: return "bg-gray-500"
+    }
+  }
+
+  const getTrendIcon = (trend: string) => {
+    switch (trend) {
+      case "up": return <TrendingUp className="w-4 h-4 text-green-500" />
+      case "down": return <TrendingUp className="w-4 h-4 text-red-500 rotate-180" />
+      default: return <Activity className="w-4 h-4 text-blue-500" />
+    }
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-
+      
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Filters */}
-          <div className="lg:w-80 space-y-6">
-            <Card className="glass">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  Filters
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Region Filter */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium" htmlFor="region-select">
-                    Select Region
-                  </label>
-                  <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                    <SelectTrigger id="region-select" aria-label="Select region filter">
-                      <SelectValue placeholder="Choose region" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Regions</SelectItem>
-                      <SelectItem value="asia">Asia</SelectItem>
-                      <SelectItem value="europe">Europe</SelectItem>
-                      <SelectItem value="africa">Africa</SelectItem>
-                      <SelectItem value="americas">Americas</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">BloomWatch Dashboard</h1>
+            <p className="text-muted-foreground">
+              Real-time flower blooming analytics and predictions
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Last updated: {data.timestamp}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Region" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Regions</SelectItem>
+                <SelectItem value="north">Northern Hemisphere</SelectItem>
+                <SelectItem value="south">Southern Hemisphere</SelectItem>
+                <SelectItem value="equator">Equatorial</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="Time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="realtime">Real-time</SelectItem>
+                <SelectItem value="daily">Daily</SelectItem>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={refreshData} disabled={isLoading}>
+              <Zap className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
+        </div>
 
-                {/* Species Filter */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium" htmlFor="species-select">
-                    Select Species
-                  </label>
-                  <Select value={selectedSpecies} onValueChange={setSelectedSpecies}>
-                    <SelectTrigger id="species-select" aria-label="Select species filter">
-                      <SelectValue placeholder="Choose species" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Species</SelectItem>
-                      <SelectItem value="lotus">Lotus</SelectItem>
-                      <SelectItem value="cherry_blossom">Cherry Blossom</SelectItem>
-                      <SelectItem value="sunflower">Sunflower</SelectItem>
-                      <SelectItem value="lavender">Lavender</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Blooms</CardTitle>
+              <Flower2 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.activeBlooms.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">
+                +12% from last hour
+              </p>
+            </CardContent>
+          </Card>
 
-                {/* Time Slider */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium" htmlFor="time-slider">
-                    Season: {months[timeRange[0] - 1]}
-                  </label>
-                  <Slider
-                    id="time-slider"
-                    value={timeRange}
-                    onValueChange={setTimeRange}
-                    max={12}
-                    min={1}
-                    step={1}
-                    className="w-full"
-                    aria-label="Select season month"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Jan</span>
-                    <span>Dec</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Bloom Predictions</CardTitle>
+              <Brain className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.bloomPredictions.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">
+                Next 24 hours
+              </p>
+            </CardContent>
+          </Card>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 gap-4">
-              <Card className="glass">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Active Blooms</p>
-                      <p className="text-2xl font-bold text-primary" aria-label={`${totalActiveBlooms} active blooms`}>
-                        {totalActiveBlooms}
-                      </p>
-                    </div>
-                    <Flower2 className="h-8 w-8 text-primary/60" aria-hidden="true" />
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Species Detected</CardTitle>
+              <Target className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.speciesCount}</div>
+              <p className="text-xs text-muted-foreground">
+                Across all regions
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Global Coverage</CardTitle>
+              <Globe className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">87%</div>
+              <p className="text-xs text-muted-foreground">
+                Monitored regions
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Weather Conditions */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Thermometer className="w-8 h-8 text-red-500" />
+                <div>
+                  <p className="text-sm font-medium">Temperature</p>
+                  <p className="text-2xl font-bold">{data.temperature.toFixed(1)}°C</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Droplets className="w-8 h-8 text-blue-500" />
+                <div>
+                  <p className="text-sm font-medium">Humidity</p>
+                  <p className="text-2xl font-bold">{data.humidity.toFixed(0)}%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Wind className="w-8 h-8 text-green-500" />
+                <div>
+                  <p className="text-sm font-medium">Wind Speed</p>
+                  <p className="text-2xl font-bold">{data.windSpeed.toFixed(1)} km/h</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Sun className="w-8 h-8 text-yellow-500" />
+                <div>
+                  <p className="text-sm font-medium">UV Index</p>
+                  <p className="text-2xl font-bold">{data.uvIndex.toFixed(1)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="regions">Regions</TabsTrigger>
+            <TabsTrigger value="species">Species</TabsTrigger>
+            <TabsTrigger value="alerts">Alerts</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5" />
+                    Regional Distribution
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {data.regions.map((region, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">{region.name}</span>
+                          <Badge className={getStatusColor(region.status)}>
+                            {region.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span>{region.blooms} blooms</span>
+                          <span>{region.temperature.toFixed(1)}°C</span>
+                          <span>{region.humidity.toFixed(0)}% humidity</span>
+                        </div>
+                        <Progress value={(region.blooms / 1000) * 100} className="h-2" />
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="glass">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Predicted Next Month</p>
-                      <p
-                        className="text-2xl font-bold text-secondary"
-                        aria-label={`${predictedBlooms} predicted blooms next month`}
-                      >
-                        {predictedBlooms}
-                      </p>
-                    </div>
-                    <TrendingUp className="h-8 w-8 text-secondary/60" aria-hidden="true" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="glass">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Diversity Index</p>
-                      <p className="text-2xl font-bold text-accent" aria-label={`Diversity index: ${diversityIndex}`}>
-                        {diversityIndex}
-                      </p>
-                    </div>
-                    <Globe className="h-8 w-8 text-accent/60" aria-hidden="true" />
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <PieChart className="w-5 h-5" />
+                    Top Species
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {data.topSpecies.map((species, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          {getTrendIcon(species.trend)}
+                          <div>
+                            <p className="font-medium">{species.name}</p>
+                            <p className="text-sm text-muted-foreground">Peak: {species.peak}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold">{species.blooms}</p>
+                          <p className="text-xs text-muted-foreground">blooms</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
 
-            <Card className="glass">
+          <TabsContent value="regions" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {data.regions.map((region, index) => (
+                <Card key={index}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>{region.name}</span>
+                      <Badge className={getStatusColor(region.status)}>
+                        {region.status}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary">{region.blooms}</div>
+                      <p className="text-sm text-muted-foreground">Active Blooms</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="text-center">
+                        <Thermometer className="w-4 h-4 mx-auto mb-1 text-red-500" />
+                        <p className="font-medium">{region.temperature.toFixed(1)}°C</p>
+                        <p className="text-xs text-muted-foreground">Temperature</p>
+                      </div>
+                      <div className="text-center">
+                        <Droplets className="w-4 h-4 mx-auto mb-1 text-blue-500" />
+                        <p className="font-medium">{region.humidity.toFixed(0)}%</p>
+                        <p className="text-xs text-muted-foreground">Humidity</p>
+                      </div>
+                    </div>
+                    <Button className="w-full" variant="outline">
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="species" className="space-y-6">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-sm">Export Data</CardTitle>
+                <CardTitle>Species Analytics</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <Button
-                  onClick={handleExportPDF}
-                  variant="outline"
-                  className="w-full justify-start bg-transparent"
-                  size="sm"
-                  disabled={isLoading}
-                  aria-label="Download PDF report"
-                >
-                  {isLoading ? <LoadingSpinner size="sm" className="mr-2" /> : <FileText className="h-4 w-4 mr-2" />}
-                  Download Report (PDF)
-                </Button>
-                <Button
-                  onClick={handleExportCSV}
-                  variant="outline"
-                  className="w-full justify-start bg-transparent"
-                  size="sm"
-                  disabled={isLoading}
-                  aria-label="Download CSV data"
-                >
-                  {isLoading ? <LoadingSpinner size="sm" className="mr-2" /> : <Download className="h-4 w-4 mr-2" />}
-                  Download Data (CSV)
-                </Button>
+              <CardContent>
+                <div className="space-y-4">
+                  {data.topSpecies.map((species, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center">
+                          <Flower2 className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{species.name}</h3>
+                          <p className="text-sm text-muted-foreground">Peak season: {species.peak}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-2xl font-bold">{species.blooms}</p>
+                          <p className="text-xs text-muted-foreground">active blooms</p>
+                        </div>
+                        {getTrendIcon(species.trend)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
-          </div>
+          </TabsContent>
 
-          {/* Main Content */}
-          <div className="flex-1 space-y-8">
-            <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-8">
-                <TabsTrigger value="overview" className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
-                  Global Overview
-                </TabsTrigger>
-                <TabsTrigger value="insights" className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  Data Insights
-                </TabsTrigger>
-                <TabsTrigger value="predictions" className="flex items-center gap-2">
-                  <Brain className="h-4 w-4" />
-                  Bloom Predictions
-                </TabsTrigger>
-              </TabsList>
-
-              {/* Global Overview Tab */}
-              <TabsContent value="overview" className="space-y-8">
-                <SafeComponent
-                  loadingText="Loading interactive map..."
-                  errorFallback={
-                    <Card className="glass">
-                      <CardContent className="p-8 text-center">
-                        <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground">Interactive map temporarily unavailable</p>
-                      </CardContent>
-                    </Card>
-                  }
-                >
-                  <Card className="glass">
-                    <CardHeader>
-                      <CardTitle>Global Bloom Hotspots</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-96 bg-muted/20 rounded-lg flex items-center justify-center">
-                        <p className="text-muted-foreground">Interactive map will load here</p>
+          <TabsContent value="alerts" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5" />
+                  System Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {data.alerts.map((alert, index) => (
+                    <div key={index} className="flex items-start gap-3 p-4 border rounded-lg">
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        alert.type === 'warning' ? 'bg-yellow-500' :
+                        alert.type === 'info' ? 'bg-blue-500' : 'bg-green-500'
+                      }`} />
+                      <div className="flex-1">
+                        <p className="font-medium">{alert.message}</p>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {alert.time}
+                        </p>
                       </div>
-                    </CardContent>
-                  </Card>
-                </SafeComponent>
-
-                {/* Active Regions */}
-                <Card className="glass">
-                  <CardHeader>
-                    <CardTitle>Active Bloom Regions</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {mockRegions.map((region) => (
-                        <div key={region.id} className="p-4 border border-border rounded-lg">
-                          <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-semibold">{region.name}</h3>
-                            <Badge variant="secondary" aria-label={`${region.activeBlooms} active blooms`}>
-                              {region.activeBlooms} blooms
-                            </Badge>
-                          </div>
-                          <div className="space-y-2">
-                            {region.hotspots.map((hotspot, index) => (
-                              <div key={index} className="flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">{hotspot.species}</span>
-                                <Badge
-                                  variant={hotspot.status === "Full Bloom" ? "default" : "outline"}
-                                  className="text-xs"
-                                >
-                                  {hotspot.status}
-                                </Badge>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              {/* Data Insights Tab */}
-              <TabsContent value="insights" className="space-y-8">
-                <Card className="glass">
-                  <CardContent className="p-8 text-center">
-                    <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Advanced data visualizations will be available here</p>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              {/* Bloom Predictions Tab */}
-              <TabsContent value="predictions" className="space-y-8">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <Card className="glass">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <Target className="h-5 w-5 text-primary" />
-                        Cherry Blossom Forecast
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-2">Expected 2 weeks earlier in 2026</p>
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 bg-muted rounded-full flex-1">
-                          <div className="h-2 bg-primary rounded-full w-[87%]"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">87% confidence</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="glass">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <Zap className="h-5 w-5 text-secondary" />
-                        Lotus Bloom Peak
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-2">Shifting towards July globally</p>
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 bg-muted rounded-full flex-1">
-                          <div className="h-2 bg-secondary rounded-full w-[92%]"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">92% confidence</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="glass">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <TrendingUp className="h-5 w-5 text-accent" />
-                        Sunflower Season
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-2">Extended bloom period expected</p>
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 bg-muted rounded-full flex-1">
-                          <div className="h-2 bg-accent rounded-full w-[78%]"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">78% confidence</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  ))}
                 </div>
-              </TabsContent>
-
-            </Tabs>
-          </div>
-        </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
+
+      <Footer />
     </div>
   )
 }

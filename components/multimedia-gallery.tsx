@@ -245,14 +245,33 @@ export function MultimediaGallery() {
         {filteredMedia.map((item, index) => (
           <div key={index} className="relative group cursor-pointer" onClick={() => handleMediaClick(index)}>
             <div className="aspect-square bg-gradient-to-br from-green-100 to-blue-100 rounded-lg overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center">
-                <Media3DPreview type={item.type} source={item.source} title={item.title} />
+              {item.type === "photo" ? (
+                <img 
+                  src={item.source} 
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                    if (fallback) fallback.style.display = 'flex'
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Media3DPreview type={item.type} source={item.source} title={item.title} />
+                </div>
+              )}
+              <div className="hidden w-full h-full items-center justify-center bg-gradient-to-br from-pink-200 to-purple-200">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full mb-2 animate-pulse"></div>
+                  <p className="text-sm font-medium">Photo Preview</p>
+                </div>
               </div>
             </div>
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <Button variant="secondary" size="sm">
                 <Eye className="w-4 h-4 mr-2" />
-                View 3D
+                View Details
               </Button>
             </div>
             <div className="mt-2">
